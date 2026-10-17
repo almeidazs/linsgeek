@@ -1,0 +1,56 @@
+{
+	"name": "linsgeek",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Configure MonsGeek keyboards on Linux, in any browser, with the official web driver.",
+	"keywords": [
+		"akko",
+		"firefox",
+		"hidraw",
+		"keyboard",
+		"linux",
+		"monsgeek",
+		"native-messaging",
+		"webhid",
+		"zen"
+	],
+	"homepage": "https://github.com/almeidazs/linsgeek",
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/almeidazs/linsgeek.git"
+	},
+	"type": "module",
+	"scripts": {
+		"build": "bun run build:extension && bun run build:host",
+		"build:extension": "tsdown --config tsdown.config.ts",
+		"build:host": "bun run build:host:x64 && bun run build:host:arm64",
+		"build:host:x64": "bun build src/host/index.ts --compile --minify --target=bun-linux-x64 --outfile dist/linsgeek-linux-x64",
+		"build:host:arm64": "bun build src/host/index.ts --compile --minify --target=bun-linux-arm64 --outfile dist/linsgeek-linux-arm64",
+		"check": "bun run check:types && bun run check:lint && bun run check:extension",
+		"check:types": "bunx tsc --noEmit",
+		"check:lint": "NODE_OPTIONS=--import=tsx oxfmt --config oxfmt.config.ts --check . '!**/*.{md,mdx}' && NODE_OPTIONS=--import=tsx oxlint --config oxlint.config.ts .",
+		"check:extension": "bun run build:extension && web-ext lint --source-dir dist/extension",
+		"fix": "NODE_OPTIONS=--import=tsx oxlint --config oxlint.config.ts --fix . && NODE_OPTIONS=--import=tsx oxfmt --config oxfmt.config.ts --write . '!**/*.{md,mdx}'",
+		"lint:commit": "commitlint",
+		"dev:host": "bun run src/host/index.ts",
+		"pack:xpi": "web-ext build --source-dir dist/extension --artifacts-dir dist --filename linsgeek-{version}.xpi --overwrite-dest",
+		"sign:xpi": "web-ext sign --source-dir dist/extension --artifacts-dir dist --channel unlisted --api-key \"${AMO_JWT_ISSUER:?AMO_JWT_ISSUER is required}\" --api-secret \"${AMO_JWT_SECRET:?AMO_JWT_SECRET is required}\"",
+		"release": "bun run check && bun run build && rm -f dist/*.xpi && if [ -n \"${AMO_JWT_ISSUER:-}\" ]; then bun run sign:xpi; else bun run pack:xpi; fi && gzip -kf9 dist/linsgeek-linux-x64 dist/linsgeek-linux-arm64 && gh release create \"v$npm_package_version\" dist/linsgeek-linux-*.gz dist/*.xpi --repo almeidazs/linsgeek --title \"v$npm_package_version\" --generate-notes"
+	},
+	"devDependencies": {
+		"@commitlint/config-conventional": "^21.1.0",
+		"@types/bun": "latest",
+		"@types/firefox-webext-browser": "latest",
+		"commitlint": "^21.1.0",
+		"lefthook": "^2.0.0",
+		"oxfmt": "^0.68.0",
+		"oxlint": "^1.83.0",
+		"tsdown": "^0.23.0",
+		"tsx": "^4.23.13",
+		"typescript": "^5.9.3",
+		"ultracite": "^7.12.0",
+		"unrun": "^0.3.1",
+		"web-ext": "^8.3.0"
+	}
+}

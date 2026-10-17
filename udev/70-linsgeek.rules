@@ -1,0 +1,7 @@
+# linsgeek: give the logged-in user access to the hidraw nodes of MonsGeek /
+# Akko keyboards and dongles. Chromium-based browsers need this for WebHID, and
+# the linsgeek native host needs it for Firefox-based browsers.
+# The host still hides keyboard/keypad collections from web pages.
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3151", TAG+="uaccess"
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="38ee", TAG+="uaccess"
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="39ab", TAG+="uaccess"

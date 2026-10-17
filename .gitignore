@@ -1,0 +1,20 @@
+# dependencies (bun install)
+node_modules
+
+# output
+dist
+*.xpi
+*.tgz
+
+# caches
+.cache
+*.tsbuildinfo
+
+# IntelliJ based IDEs
+.idea
+
+# Finder (MacOS) folder config
+.DS_Store
+
+# Added by code-review-graph
+.code-review-graph/

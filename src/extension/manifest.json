@@ -1,0 +1,31 @@
+{
+	"manifest_version": 3,
+	"name": "Linsgeek",
+	"version": "0.0.0",
+	"description": "Unofficial. Lets the MonsGeek web driver (app.monsgeek.com) configure keyboards in Firefox-based browsers on Linux.",
+	"homepage_url": "https://github.com/almeidazs/linsgeek",
+	"icons": { "48": "icons/icon.svg", "96": "icons/icon.svg" },
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "linsgeek@almeidazs.com",
+			"strict_min_version": "140.0",
+			"data_collection_permissions": { "required": ["none"] }
+		}
+	},
+	"permissions": ["nativeMessaging"],
+	"host_permissions": ["https://app.monsgeek.com/*"],
+	"background": { "scripts": ["background.js"] },
+	"content_scripts": [
+		{
+			"matches": ["https://app.monsgeek.com/*"],
+			"js": ["content/polyfill.js"],
+			"run_at": "document_start",
+			"world": "MAIN"
+		},
+		{
+			"matches": ["https://app.monsgeek.com/*"],
+			"js": ["content/bridge.js"],
+			"run_at": "document_start"
+		}
+	]
+}
